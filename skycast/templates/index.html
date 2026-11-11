@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}SkyCast | Weather Forecast{% endblock %}
+
+{% block content %}
+<section class="card hero">
+  <h1>Welcome to {{ app_name }}</h1>
+  <p class="muted">
+    The foundation is running. Weather search, forecasts and charts arrive in the next phases.
+  </p>
+  <span class="status-pill" id="status-pill">
+    <span class="status-dot"></span> Server running
+  </span>
+</section>
+{% endblock %}

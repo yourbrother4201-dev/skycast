@@ -1,0 +1,19 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Test cache
+.pytest_cache/
+
+# Secrets and local settings
+.env
+
+# Local database (created in Phase 4)
+*.db
+
+# Editor settings
+.vscode/
+.idea/
