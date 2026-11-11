@@ -2,10 +2,8 @@
 
 Docs: https://open-meteo.com/en/docs
 """
-from flask import current_app
-
 from skycast.services.exceptions import ApiResponseError
-from skycast.services.geocoding import _get_json
+from skycast.services.http import get_json
 from skycast.services.models import CurrentWeather, DailyPoint, Forecast, HourlyPoint
 
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
@@ -36,7 +34,7 @@ def get_forecast(latitude, longitude):
         "timezone": "auto",
         "wind_speed_unit": "kmh",
     }
-    data = _get_json(FORECAST_URL, params)
+    data = get_json(FORECAST_URL, params)
 
     try:
         return Forecast(
