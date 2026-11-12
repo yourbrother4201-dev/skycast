@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="card hero">
-  <h1>Welcome to {{ app_name }}</h1>
+  <h1>Weather in any city</h1>
   <p class="muted">Search any city in the world, or use your current location.</p>
 
   <form id="search-form" class="search-form" autocomplete="off">
@@ -28,7 +28,56 @@
     <h2>Recent searches</h2>
     <ul id="recent-list" class="chip-list"></ul>
   </div>
+</section>
 
-  <pre id="result-preview" class="result-preview" hidden></pre>
+<section id="dash-section" class="dashboard" hidden>
+
+  <div id="dash-loading" class="card state-card" hidden>
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Loading weather...</p>
+  </div>
+
+  <div id="dash-error" class="card state-card" hidden>
+    <p class="state-title">Something went wrong</p>
+    <p id="dash-error-text" class="muted"></p>
+    <button id="retry-btn" type="button" class="btn btn-ghost">Try again</button>
+  </div>
+
+  <div id="dash-content" hidden>
+    <div class="dash-toolbar">
+      <div class="unit-toggle" role="group" aria-label="Temperature unit">
+        <button type="button" class="unit-btn" data-unit="C">°C</button>
+        <button type="button" class="unit-btn" data-unit="F">°F</button>
+      </div>
+      <button id="refresh-btn" type="button" class="btn btn-ghost">Refresh</button>
+    </div>
+
+    <div class="card current-card">
+      <div class="current-main">
+        <p id="cur-city" class="city-name"></p>
+        <div class="current-temp-row">
+          <span id="cur-temp" class="current-temp"></span>
+          <span id="cur-icon" class="current-icon" aria-hidden="true"></span>
+        </div>
+        <p id="cur-condition" class="condition"></p>
+        <p id="cur-feels" class="muted"></p>
+      </div>
+      <dl class="stats">
+        <div><dt>Humidity</dt><dd id="cur-humidity"></dd></div>
+        <div><dt>Wind</dt><dd id="cur-wind"></dd></div>
+        <div><dt>Pressure</dt><dd id="cur-pressure"></dd></div>
+      </dl>
+    </div>
+
+    <div class="card">
+      <h2>Next 24 hours</h2>
+      <div id="hourly-strip" class="hourly-strip"></div>
+    </div>
+
+    <div class="card">
+      <h2>7-day forecast</h2>
+      <ul id="daily-list" class="daily-list"></ul>
+    </div>
+  </div>
 </section>
 {% endblock %}

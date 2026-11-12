@@ -26,7 +26,9 @@
     <p>Weather data by Open-Meteo</p>
   </footer>
 
+  <!-- Load order matters: search and dashboard define their objects before main.js starts them. -->
   <script src="{{ url_for('static', filename='js/search.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>
 </html>

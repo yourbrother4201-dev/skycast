@@ -1,8 +1,7 @@
 // SkyCast front-end entry point.
-// Starts the page features. Search logic lives in search.js.
+// Starts each feature once the HTML is ready.
 document.addEventListener("DOMContentLoaded", () => {
   document.body.dataset.ready = "true";
-  if (window.SkyCastSearch) {
-    window.SkyCastSearch.init();
-  }
+  if (window.SkyCastSearch) window.SkyCastSearch.init();
+  if (window.SkyCastDashboard) window.SkyCastDashboard.init();
 });
