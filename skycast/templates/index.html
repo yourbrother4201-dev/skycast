@@ -15,6 +15,7 @@
       placeholder="Search a city, e.g. Delhi"
       aria-label="City name"
       minlength="2"
+      maxlength="100"
       required
     >
     <button type="submit" class="btn btn-primary">Search</button>
@@ -49,7 +50,10 @@
         <button type="button" class="unit-btn" data-unit="C">°C</button>
         <button type="button" class="unit-btn" data-unit="F">°F</button>
       </div>
-      <button id="refresh-btn" type="button" class="btn btn-ghost">Refresh</button>
+      <div class="refresh-group">
+        <span id="updated-at" class="muted updated-at"></span>
+        <button id="refresh-btn" type="button" class="btn btn-ghost">Refresh</button>
+      </div>
     </div>
 
     <div class="card current-card">

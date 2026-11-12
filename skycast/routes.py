@@ -8,12 +8,7 @@ from flask import Blueprint, current_app, jsonify, render_template, request
 
 from skycast.db.recent_searches import get_recent_searches, save_search
 from skycast.processing.view_models import build_dashboard_view
-from skycast.services.exceptions import (
-    ApiConnectionError,
-    ApiResponseError,
-    CityNotFoundError,
-    WeatherServiceError,
-)
+from skycast.services.exceptions import CityNotFoundError, WeatherServiceError
 from skycast.services.forecast import get_forecast
 from skycast.services.geocoding import search_cities
 
@@ -59,16 +54,18 @@ def api_search():
 
 @main_bp.route("/api/weather")
 def api_weather():
-    """Return the processed dashboard data for ?lat=&lon=&unit=C|F&name=&country=.
+    """Return processed dashboard data for ?lat=&lon=&unit=C|F&name=&country=.
 
-    The name and country are optional. When given, the search is saved to
-    the recent-searches table.
+    name and country are optional. When name is given, the search is saved.
     """
     try:
         latitude = float(request.args["lat"])
         longitude = float(request.args["lon"])
     except (KeyError, ValueError):
         return jsonify({"error": "Latitude and longitude are required numbers."}), 400
+
+    if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+        return jsonify({"error": "Latitude or longitude is out of range."}), 400
 
     unit = request.args.get("unit", "C").upper()
     if unit not in ("C", "F"):

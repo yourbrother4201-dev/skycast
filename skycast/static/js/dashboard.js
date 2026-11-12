@@ -2,7 +2,6 @@
 // Owns the application state (current city and unit), so the unit toggle
 // can refresh the data without a new search.
 (function () {
-  // Maps the icon names from Phase 3 to emoji. Emoji need no image files.
   const ICONS = {
     "sun": "☀️",
     "moon": "🌙",
@@ -16,7 +15,6 @@
     "storm": "⛈️",
   };
 
-  // Application state in one object. Nothing else keeps its own copy.
   const state = {
     city: null,   // { name, country, latitude, longitude }
     unit: "C",    // "C" or "F"
@@ -25,8 +23,7 @@
 
   const $ = (id) => document.getElementById(id);
 
-  // Create an element with a class and text. textContent (not innerHTML)
-  // means city names or other text can never inject HTML into the page.
+  // textContent (not innerHTML) means text can never inject HTML into the page.
   function el(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -62,8 +59,6 @@
     return data;
   }
 
-  // Called when the user picks a city. Passing name and country tells the
-  // server to save this search. Unit changes never pass them.
   async function loadCity(city) {
     state.city = city;
     showState("loading");
@@ -82,7 +77,6 @@
     }
   }
 
-  // Called by the unit toggle or the refresh button. Re-uses the current city.
   async function refresh() {
     if (!state.city) return;
     showState("loading");
@@ -161,6 +155,7 @@
     renderCurrent(data.current, cityLabel);
     renderHourly(data.hourly || []);
     renderDaily(data.daily || []);
+    $("updated-at").textContent = data.updated_at ? `Updated at ${data.updated_at}` : "";
     if (data.chart && window.SkyCastCharts) {
       window.SkyCastCharts.render(data.chart);
     }
@@ -185,4 +180,4 @@
     setUnit,
     getState: () => state,
   };
-})();
+})();g

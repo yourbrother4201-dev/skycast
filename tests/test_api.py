@@ -7,7 +7,10 @@ import pytest
 
 from config import TestingConfig
 from skycast import create_app
-from skycast.services.exceptions import CityNotFoundError
+from skycast.services.exceptions import (
+    ApiConnectionError,
+    CityNotFoundError,
+)
 from skycast.services.models import City, CurrentWeather, DailyPoint, Forecast, HourlyPoint
 
 
@@ -51,6 +54,8 @@ def client(tmp_path, monkeypatch):
     def fake_search(name, count=5):
         if name.lower() == "xyzzyqq":
             raise CityNotFoundError("No city found.")
+        if name.lower() == "offline":
+            raise ApiConnectionError("Your internet connection may be down.")
         return [City("Delhi", "India", 28.65, 77.23, "Delhi")]
 
     monkeypatch.setattr("skycast.routes.search_cities", fake_search)
@@ -70,8 +75,19 @@ def test_search_no_match_returns_empty_list(client):
     assert "No city" in data["message"]
 
 
+def test_search_connection_error_returns_503(client):
+    response = client.get("/api/search?q=offline")
+    assert response.status_code == 503
+    assert "internet" in response.get_json()["error"]
+
+
 def test_weather_rejects_missing_coordinates(client):
     assert client.get("/api/weather").status_code == 400
+
+
+def test_weather_rejects_out_of_range_coordinates(client):
+    assert client.get("/api/weather?lat=95&lon=10").status_code == 400
+    assert client.get("/api/weather?lat=10&lon=200").status_code == 400
 
 
 def test_weather_rejects_bad_unit(client):
@@ -83,6 +99,7 @@ def test_weather_celsius_output(client):
     assert data["unit"] == "C"
     assert data["current"]["temperature"] == "22°C"
     assert data["chart"]["humidity"] == [60]
+    assert "updated_at" in data
 
 
 def test_weather_fahrenheit_output(client):

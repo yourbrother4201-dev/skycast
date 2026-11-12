@@ -21,6 +21,15 @@ def format_day_label(iso_date):
     return dt.strftime("%a %d")
 
 
+def format_updated_time(when=None):
+    """Return the time of an update, such as '3:45 PM'.
+
+    Passing a datetime makes this easy to test. Without one, the current time is used.
+    """
+    when = when or datetime.now()
+    return when.strftime("%I:%M %p").lstrip("0")
+
+
 def _convert_temp(celsius, unit):
     """Return the number in the chosen unit, rounded to a whole number."""
     value = celsius if unit == "C" else celsius * 9 / 5 + 32
@@ -62,10 +71,7 @@ def build_hourly_view(hourly, unit="C"):
 
 
 def build_chart_view(hourly, unit="C"):
-    """Return parallel lists for the three Chart.js graphs.
-
-    Each list has one value per hour, in the same order as the labels.
-    """
+    """Return parallel lists for the three Chart.js graphs."""
     return {
         "labels": [format_hour_label(p.time) for p in hourly],
         "temperature": [_convert_temp(p.temperature, unit) for p in hourly],
@@ -98,6 +104,7 @@ def build_dashboard_view(forecast_data, unit="C"):
     return {
         "timezone": forecast_data.timezone,
         "unit": unit,
+        "updated_at": format_updated_time(),
         "current": build_current_view(forecast_data.current, unit),
         "hourly": build_hourly_view(forecast_data.hourly, unit),
         "chart": build_chart_view(forecast_data.hourly, unit),

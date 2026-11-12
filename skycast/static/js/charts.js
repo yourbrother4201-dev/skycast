@@ -22,7 +22,7 @@
       },
       scales: {
         x: {
-          ticks: { color: palette.muted, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 },
+          ticks: { color: palette.muted, maxRotation: 0, autoSkip: true, maxTicksLimit: 6 },
           grid: { color: palette.grid },
         },
         y: {
@@ -41,6 +41,11 @@
     return options;
   }
 
+  // Ask every chart to measure its container again.
+  function resizeAll() {
+    Object.values(charts).forEach((chart) => chart.resize());
+  }
+
   // Create a chart the first time, or update the existing one afterwards.
   function upsert(id, config) {
     const canvas = document.getElementById(id);
@@ -52,8 +57,6 @@
     } else {
       charts[id] = new Chart(canvas, config);
     }
-    // Measure again after the layout settles. This fixes charts created
-    // while their section was hidden or still animating.
     charts[id].resize();
   }
 
@@ -107,14 +110,14 @@
     });
   }
 
-  // Chart.js resizes when the window changes, but not when a parent element
-  // changes size on its own. ResizeObserver watches each chart's container.
+  // Watch each chart box, so the charts follow any size change of their
+  // container, plus the window resize event as a fallback.
   function watchContainers() {
-    if (!("ResizeObserver" in window)) return;
-    const observer = new ResizeObserver(() => {
-      Object.values(charts).forEach((chart) => chart.resize());
-    });
-    document.querySelectorAll(".chart-wrap").forEach((box) => observer.observe(box));
+    window.addEventListener("resize", resizeAll);
+    if ("ResizeObserver" in window) {
+      const observer = new ResizeObserver(resizeAll);
+      document.querySelectorAll(".chart-box").forEach((box) => observer.observe(box));
+    }
   }
 
   window.SkyCastCharts = { render, watchContainers };

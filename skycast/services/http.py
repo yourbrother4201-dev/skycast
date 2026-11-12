@@ -19,17 +19,21 @@ def get_json(url, params):
     timeout = current_app.config.get("REQUEST_TIMEOUT", 10)
     try:
         response = requests.get(url, params=params, timeout=timeout)
+    except requests.Timeout as exc:
+        raise ApiConnectionError(
+            "The weather service took too long to respond. Please try again."
+        ) from exc
     except requests.RequestException as exc:
         raise ApiConnectionError(
-            "Could not reach the weather service. Check your internet connection."
+            "Could not reach the weather service. Your internet connection may be down."
         ) from exc
 
     if response.status_code != 200:
         raise ApiResponseError(
-            f"Weather service returned status {response.status_code}."
+            f"The weather service returned an error (status {response.status_code}). Please try again later."
         )
 
     try:
         return response.json()
     except ValueError as exc:
-        raise ApiResponseError("Weather service sent data that could not be read.") from exc
+        raise ApiResponseError("The weather service sent data that could not be read.") from exc
