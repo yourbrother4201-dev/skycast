@@ -1,7 +1,6 @@
 /* ==========================================================
    SkyCast design system
    Colours, spacing and components are defined once here.
-   Later phases reuse these variables and classes.
    ========================================================== */
 
 /* ---------- 1. Design tokens (CSS variables) ---------- */
@@ -15,6 +14,7 @@
   --color-text: #f2f6ff;
   --color-muted: #a9b8dd;
   --color-success: #3ddc97;
+  --color-error: #ff7b7b;
 
   --radius-md: 14px;
   --radius-lg: 22px;
@@ -57,9 +57,19 @@ h1 {
   margin-bottom: var(--space-sm);
 }
 
+h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
 a {
   color: inherit;
   text-decoration: none;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 /* ---------- 3. Layout ---------- */
@@ -161,7 +171,148 @@ a {
   50% { opacity: 0.35; }
 }
 
-/* ---------- 7. Footer ---------- */
+/* ---------- 7. Search form and buttons ---------- */
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+  max-width: 680px;
+  margin: 0 auto var(--space-md);
+}
+
+.search-form input {
+  flex: 1 1 260px;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-surface-border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text);
+  font: inherit;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-form input::placeholder {
+  color: var(--color-muted);
+}
+
+.search-form input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(79, 163, 255, 0.25);
+}
+
+.btn {
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-strong));
+  color: #fff;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--color-surface-border);
+  color: var(--color-text);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-accent);
+}
+
+/* ---------- 8. Suggestions, messages and chips ---------- */
+.suggestions {
+  list-style: none;
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: left;
+  border-radius: var(--radius-md);
+  background: rgba(11, 20, 51, 0.95);
+  border: 1px solid var(--color-surface-border);
+  overflow: hidden;
+}
+
+.suggestions li button {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.suggestions li button:hover {
+  background: rgba(79, 163, 255, 0.15);
+}
+
+.message {
+  min-height: 1.5rem;
+  margin: var(--space-sm) 0;
+  color: var(--color-muted);
+}
+
+.message.is-error {
+  color: var(--color-error);
+}
+
+.recent {
+  margin-top: var(--space-lg);
+}
+
+.chip-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.chip-list button {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-surface-border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.chip-list button:hover {
+  border-color: var(--color-accent);
+}
+
+.result-preview {
+  margin-top: var(--space-lg);
+  text-align: left;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  max-height: 320px;
+  overflow: auto;
+}
+
+/* ---------- 9. Footer ---------- */
 .footer {
   text-align: center;
   color: var(--color-muted);
@@ -170,7 +321,7 @@ a {
   border-top: 1px solid var(--color-surface-border);
 }
 
-/* ---------- 8. Responsive adjustments ---------- */
+/* ---------- 10. Responsive adjustments ---------- */
 @media (max-width: 600px) {
   .card {
     padding: var(--space-md);

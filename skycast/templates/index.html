@@ -5,11 +5,30 @@
 {% block content %}
 <section class="card hero">
   <h1>Welcome to {{ app_name }}</h1>
-  <p class="muted">
-    The foundation is running. Weather search, forecasts and charts arrive in the next phases.
-  </p>
-  <span class="status-pill" id="status-pill">
-    <span class="status-dot"></span> Server running
-  </span>
+  <p class="muted">Search any city in the world, or use your current location.</p>
+
+  <form id="search-form" class="search-form" autocomplete="off">
+    <input
+      type="text"
+      id="city-input"
+      name="city"
+      placeholder="Search a city, e.g. Delhi"
+      aria-label="City name"
+      minlength="2"
+      required
+    >
+    <button type="submit" class="btn btn-primary">Search</button>
+    <button type="button" id="locate-btn" class="btn btn-ghost">Use my location</button>
+  </form>
+
+  <ul id="suggestions" class="suggestions" hidden></ul>
+  <p id="message" class="message" role="status"></p>
+
+  <div class="recent">
+    <h2>Recent searches</h2>
+    <ul id="recent-list" class="chip-list"></ul>
+  </div>
+
+  <pre id="result-preview" class="result-preview" hidden></pre>
 </section>
 {% endblock %}
