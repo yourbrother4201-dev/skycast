@@ -12,6 +12,7 @@ from skycast.processing.units import (
     kmh_to_mph,
 )
 from skycast.processing.view_models import (
+    build_chart_view,
     build_dashboard_view,
     format_day_label,
     format_hour_label,
@@ -76,7 +77,7 @@ def _sample_forecast():
         is_day=False,
         time="2026-11-11T18:00",
     )
-    hourly = [HourlyPoint("2026-11-11T18:00", 22.5, 10, 2)]
+    hourly = [HourlyPoint("2026-11-11T18:00", 22.5, 10, 2, humidity=60, wind_speed=10.0)]
     daily = [
         DailyPoint(
             date="2026-11-11",
@@ -104,3 +105,19 @@ def test_dashboard_view_fahrenheit():
     view = build_dashboard_view(_sample_forecast(), unit="F")
     assert view["current"]["temperature"] == "72°F"
     assert view["daily"][0]["temp_max"] == "82°F"
+
+
+def test_chart_view_lists_match_length():
+    chart = build_chart_view(_sample_forecast().hourly, unit="C")
+    assert chart["labels"] == ["6 PM"]
+    assert chart["temperature"] == [22]
+    assert chart["humidity"] == [60]
+    assert chart["wind"] == [10]
+    assert chart["wind_unit"] == "km/h"
+
+
+def test_chart_view_fahrenheit_uses_mph():
+    chart = build_chart_view(_sample_forecast().hourly, unit="F")
+    assert chart["temperature"] == [72]
+    assert chart["wind"] == [6]
+    assert chart["wind_unit"] == "mph"

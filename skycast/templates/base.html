@@ -26,8 +26,10 @@
     <p>Weather data by Open-Meteo</p>
   </footer>
 
-  <!-- Load order matters: search and dashboard define their objects before main.js starts them. -->
+  <!-- Chart.js must load before charts.js, which uses the global Chart object. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="{{ url_for('static', filename='js/search.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>

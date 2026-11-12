@@ -12,7 +12,10 @@ CURRENT_VARIABLES = (
     "temperature_2m,relative_humidity_2m,apparent_temperature,"
     "is_day,weather_code,surface_pressure,wind_speed_10m"
 )
-HOURLY_VARIABLES = "temperature_2m,precipitation_probability,weather_code"
+HOURLY_VARIABLES = (
+    "temperature_2m,precipitation_probability,weather_code,"
+    "relative_humidity_2m,wind_speed_10m"
+)
 DAILY_VARIABLES = (
     "weather_code,temperature_2m_max,temperature_2m_min,"
     "precipitation_probability_max,sunrise,sunset"
@@ -22,7 +25,7 @@ DAILY_VARIABLES = (
 def get_forecast(latitude, longitude):
     """Fetch current, hourly and daily weather for a coordinate.
 
-    Units are metric (Celsius, km/h, hPa). The UI converts units in Phase 3.
+    Units are metric (Celsius, km/h, hPa). The processing layer converts units.
     """
     params = {
         "latitude": latitude,
@@ -64,23 +67,26 @@ def _parse_current(raw):
 def _parse_hourly(raw):
     """Turn the parallel 'hourly' lists into HourlyPoint objects.
 
-    Open-Meteo sends each variable as its own list, so we zip them together.
     The first 24 entries are the next 24 hours.
     """
-    points = []
     rows = zip(
         raw["time"],
         raw["temperature_2m"],
         raw["precipitation_probability"],
         raw["weather_code"],
+        raw["relative_humidity_2m"],
+        raw["wind_speed_10m"],
     )
-    for time, temp, precip, code in list(rows)[:24]:
+    points = []
+    for time, temp, precip, code, humidity, wind in list(rows)[:24]:
         points.append(
             HourlyPoint(
                 time=time,
                 temperature=float(temp),
                 precipitation_probability=int(precip or 0),
                 weather_code=int(code),
+                humidity=int(humidity or 0),
+                wind_speed=float(wind or 0.0),
             )
         )
     return points
@@ -88,7 +94,6 @@ def _parse_hourly(raw):
 
 def _parse_daily(raw):
     """Turn the parallel 'daily' lists into DailyPoint objects."""
-    points = []
     rows = zip(
         raw["time"],
         raw["temperature_2m_max"],
@@ -98,6 +103,7 @@ def _parse_daily(raw):
         raw["sunrise"],
         raw["sunset"],
     )
+    points = []
     for date, tmax, tmin, precip, code, sunrise, sunset in rows:
         points.append(
             DailyPoint(

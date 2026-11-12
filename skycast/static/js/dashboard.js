@@ -25,7 +25,7 @@
 
   const $ = (id) => document.getElementById(id);
 
-  // Create an element with a class and text. Using textContent (not innerHTML)
+  // Create an element with a class and text. textContent (not innerHTML)
   // means city names or other text can never inject HTML into the page.
   function el(tag, className, text) {
     const node = document.createElement(tag);
@@ -161,6 +161,9 @@
     renderCurrent(data.current, cityLabel);
     renderHourly(data.hourly || []);
     renderDaily(data.daily || []);
+    if (data.chart && window.SkyCastCharts) {
+      window.SkyCastCharts.render(data.chart);
+    }
     setActiveUnit(state.unit);
     showState("content");
     $("dash-section").scrollIntoView({ behavior: "smooth", block: "start" });

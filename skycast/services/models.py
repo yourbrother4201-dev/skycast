@@ -36,6 +36,8 @@ class HourlyPoint:
     temperature: float
     precipitation_probability: int
     weather_code: int
+    humidity: int = 0
+    wind_speed: float = 0.0
 
 
 @dataclass

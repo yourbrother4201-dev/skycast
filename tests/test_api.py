@@ -25,7 +25,7 @@ def _fake_forecast():
             is_day=False,
             time="2026-11-11T18:00",
         ),
-        hourly=[HourlyPoint("2026-11-11T18:00", 22.0, 10, 2)],
+        hourly=[HourlyPoint("2026-11-11T18:00", 22.0, 10, 2, humidity=60, wind_speed=10.0)],
         daily=[
             DailyPoint(
                 date="2026-11-11",
@@ -82,12 +82,14 @@ def test_weather_celsius_output(client):
     data = client.get("/api/weather?lat=28.65&lon=77.23&unit=C").get_json()
     assert data["unit"] == "C"
     assert data["current"]["temperature"] == "22°C"
+    assert data["chart"]["humidity"] == [60]
 
 
 def test_weather_fahrenheit_output(client):
     data = client.get("/api/weather?lat=28.65&lon=77.23&unit=F").get_json()
     assert data["unit"] == "F"
     assert data["current"]["temperature"] == "72°F"
+    assert data["chart"]["wind_unit"] == "mph"
 
 
 def test_recent_returns_list(client):

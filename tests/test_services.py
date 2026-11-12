@@ -1,7 +1,7 @@
 """Tests for the service layer.
 
-The real internet is never used here. We replace requests.get with a fake
-function that returns prepared JSON, so the tests are fast and repeatable.
+The real internet is never used. requests.get is replaced with a fake
+function that returns prepared JSON.
 
 Run with:  python -m pytest -v
 """
@@ -10,7 +10,7 @@ import requests
 
 from config import TestingConfig
 from skycast import create_app
-from skycast.services import geocoding, forecast
+from skycast.services import forecast, geocoding
 from skycast.services.exceptions import (
     ApiConnectionError,
     ApiResponseError,
@@ -31,7 +31,7 @@ class FakeResponse:
 
 @pytest.fixture
 def app():
-    """A Flask app is needed because the services read config through current_app."""
+    """Services read config through current_app, so an app context is needed."""
     app = create_app(TestingConfig)
     with app.app_context():
         yield app
@@ -66,6 +66,8 @@ FORECAST_SAMPLE = {
         "temperature_2m": [22.5, 21.8],
         "precipitation_probability": [10, None],
         "weather_code": [1, 2],
+        "relative_humidity_2m": [60, 62],
+        "wind_speed_10m": [9.5, None],
     },
     "daily": {
         "time": ["2026-11-11"],
@@ -120,6 +122,8 @@ def test_get_forecast_parses_data(monkeypatch, app):
     assert result.current.is_day is False
     assert len(result.hourly) == 2
     assert result.hourly[1].precipitation_probability == 0  # None became 0
+    assert result.hourly[0].humidity == 60
+    assert result.hourly[1].wind_speed == 0.0  # None became 0.0
     assert result.daily[0].temp_max == 28.0
 
 
